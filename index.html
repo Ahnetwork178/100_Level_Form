@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admission Application — AL HAMID NETWORK COMPUTERS</title>
+<link rel="icon" type="image/jpeg" href="logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F5EF;
+    --surface:#FFFFFF;
+    --ink:#1B2A4A;
+    --ink-soft:#5A6478;
+    --ink-faint:#8992A3;
+    --accent:#B8860B;
+    --accent-deep:#8C6D1F;
+    --accent-tint:#F3EAD2;
+    --line:#E1DACB;
+    --success:#2F6B4F;
+    --success-tint:#E6EFE9;
+    --error:#B3432B;
+    --error-tint:#F8E9E4;
+    --radius:3px;
+    --serif:'Source Serif 4', Georgia, serif;
+    --sans:'Public Sans', -apple-system, Segoe UI, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    font-family:var(--sans);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- Shell ---------- */
+  .shell{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 20px 80px;
+  }
+  .masthead{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:18px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .masthead .brandmark{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .brandmark .glyph{
+    width:46px;height:46px;
+    border:1.5px solid var(--ink);
+    border-radius:50%;
+    overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    background:#EAF4FB;
+  }
+  .brandmark .glyph img{
+    width:100%;height:100%;
+    object-fit:cover;
+  }
+  .brandmark h1{
+    font-family:var(--serif);
+    font-size:19px;
+    font-weight:600;
+    margin:0;
+    letter-spacing:0.2px;
+    line-height:1.25;
+  }
+  .brandmark p{
+    margin:2px 0 0;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .progress-figure{
+    text-align:right;
+  }
+  .progress-figure .num{
+    font-family:var(--serif);
+    font-size:34px;
+    font-weight:600;
+    color:var(--accent-deep);
+    line-height:1;
+  }
+  .progress-figure .lbl{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:2px;
+  }
+
+  /* ---------- Layout: stepper + content ---------- */
+  .layout{
+    display:grid;
+    grid-template-columns:210px 1fr;
+    gap:36px;
+    align-items:start;
+  }
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr;}
+    .stepper{display:none;}
+    .mobile-progress{display:block !important;}
+  }
+  .mobile-progress{
+    display:none;
+    margin-bottom:22px;
+  }
+  .mobile-progress .track{
+    height:3px;background:var(--line);border-radius:2px;overflow:hidden;
+  }
+  .mobile-progress .fill{
+    height:100%;background:var(--accent);transition:width .35s ease;
+  }
+  .mobile-progress .stagelabel{
+    margin-top:8px;font-size:12.5px;color:var(--ink-soft);
+  }
+
+  .stepper{
+    position:sticky;
+    top:28px;
+    border-left:1px solid var(--line);
+    padding-left:0;
+  }
+  .step{
+    position:relative;
+    padding:0 0 26px 26px;
+    border-left:1px solid var(--line);
+    margin-left:-1px;
+    cursor:pointer;
+  }
+  .step:last-child{border-left:1px solid transparent; padding-bottom:0;}
+  .step .dot{
+    position:absolute;
+    left:-6.5px;top:1px;
+    width:12px;height:12px;
+    border-radius:50%;
+    background:var(--surface);
+    border:1.5px solid var(--ink-faint);
+  }
+  .step.done .dot{background:var(--success);border-color:var(--success);}
+  .step.active .dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint);}
+  .step .num{
+    font-family:var(--serif);
+    font-size:11px;
+    color:var(--ink-faint);
+    letter-spacing:0.5px;
+  }
+  .step .name{
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin-top:1px;
+  }
+  .step.active .name, .step.done .name{color:var(--ink);}
+  .step .hint{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+
+  /* ---------- Card ---------- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:30px 32px 26px;
+  }
+  @media (max-width:600px){ .card{padding:22px 18px 20px;} }
+  .stage-head{margin-bottom:22px;}
+  .stage-head .eyebrow{
+    font-size:12px;color:var(--accent-deep);font-weight:600;
+  }
+  .stage-head h2{
+    font-family:var(--serif);
+    font-size:24px;
+    font-weight:600;
+    margin:4px 0 6px;
+  }
+  .stage-head p{
+    margin:0;color:var(--ink-soft);font-size:14px;max-width:60ch;line-height:1.5;
+  }
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;}
+  .grid.g3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:640px){ .grid, .grid.g3{grid-template-columns:1fr;} }
+
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--ink);
+  }
+  .field .opt{font-weight:400;color:var(--ink-faint);}
+  .field input[type=text],
+  .field input[type=email],
+  .field input[type=tel],
+  .field input[type=date],
+  .field input[type=number],
+  .field select,
+  .field textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--bg);
+    font-family:var(--sans);
+    font-size:14px;
+    color:var(--ink);
+  }
+  .field textarea{resize:vertical;min-height:70px;}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:2px solid var(--accent);outline-offset:1px;background:var(--surface);
+  }
+  .field .err{display:none;color:var(--error);font-size:12px;margin-top:5px;}
+  .field.invalid input,.field.invalid select{border-color:var(--error);background:var(--error-tint);}
+  .field.invalid .err{display:block;}
+  .field .helptext{font-size:12px;color:var(--ink-faint);margin-top:5px;}
+  fieldset{border:none;padding:0;margin:0 0 18px;}
+  fieldset legend{font-size:13px;font-weight:600;margin-bottom:8px;padding:0;}
+  .radiorow{display:flex;gap:10px;flex-wrap:wrap;}
+  .radiorow label{
+    display:flex;align-items:center;gap:7px;
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:9px 14px;font-size:13.5px;cursor:pointer;background:var(--bg);
+  }
+  .radiorow input{accent-color:var(--accent);}
+  .radiorow label.checked{border-color:var(--accent);background:var(--accent-tint);}
+
+  .section-divider{
+    border:none;border-top:1px solid var(--line);margin:22px 0;
+  }
+  .subhead{
+    font-family:var(--serif);font-size:16px;font-weight:600;margin:0 0 4px;
+  }
+  .subhead-note{font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;}
+
+  /* O'level table */
+  .olevel-table{width:100%;border-collapse:collapse;margin-bottom:6px;}
+  .olevel-table th{
+    text-align:left;font-size:11.5px;color:var(--ink-faint);font-weight:600;
+    padding:0 8px 6px 0;text-transform:none;
+  }
+  .olevel-table td{padding:4px 8px 4px 0;}
+  .olevel-table input,.olevel-table select{
+    width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--bg);font-size:13.5px;font-family:var(--sans);
+  }
+  .rowbtn{
+    background:none;border:1px dashed var(--ink-faint);color:var(--ink-soft);
+    border-radius:var(--radius);font-size:12.5px;padding:6px 10px;cursor:pointer;margin-top:4px;
+  }
+  .rowbtn:hover{border-color:var(--accent);color:var(--accent-deep);}
+
+  /* Documents */
+  .doclist{display:flex;flex-direction:column;gap:10px;}
+  .docrow{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--bg);
+  }
+  .docrow.satisfied{border-color:var(--success);background:var(--success-tint);}
+  .docrow .docinfo{display:flex;align-items:center;gap:10px;min-width:0;}
+  .docrow .check{
+    width:20px;height:20px;border-radius:50%;border:1.5px solid var(--ink-faint);
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;
+  }
+  .docrow.satisfied .check{background:var(--success);border-color:var(--success);color:#fff;}
+  .docrow .docname{font-size:13.5px;font-weight:600;}
+  .docrow .docsub{font-size:11.5px;color:var(--ink-faint);}
+  .docrow .filename{font-size:12px;color:var(--ink-soft);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .filebtn{
+    font-size:12.5px;padding:7px 12px;border:1px solid var(--ink);border-radius:var(--radius);
+    background:var(--surface);cursor:pointer;color:var(--ink);white-space:nowrap;
+  }
+  .filebtn:hover{background:var(--ink);color:#fff;}
+  input[type=file]{display:none;}
+
+  /* Review */
+  .review-block{border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;}
+  .review-block summary{
+    list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 16px;font-family:var(--serif);font-weight:600;font-size:15.5px;
+  }
+  .review-block summary::-webkit-details-marker{display:none;}
+  .review-block summary .editlink{
+    font-family:var(--sans);font-weight:600;font-size:12.5px;color:var(--accent-deep);
+    border:1px solid var(--accent);border-radius:var(--radius);padding:4px 10px;
+  }
+  .review-block summary .editlink:hover{background:var(--accent-tint);}
+  .review-grid{padding:2px 16px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;}
+  @media (max-width:600px){.review-grid{grid-template-columns:1fr;}}
+  .review-item dt{font-size:11.5px;color:var(--ink-faint);margin:0;}
+  .review-item dd{font-size:13.5px;margin:1px 0 8px;color:var(--ink);}
+  .review-item dd.missing{color:var(--error);font-style:italic;}
+
+  .confirm-row{
+    display:flex;gap:10px;align-items:flex-start;margin:22px 0 6px;
+    padding:14px 16px;background:var(--accent-tint);border-radius:var(--radius);
+  }
+  .confirm-row input{margin-top:3px;accent-color:var(--accent-deep);}
+  .confirm-row label{font-size:13.5px;line-height:1.5;}
+
+  /* Nav buttons */
+  .stage-nav{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:26px;padding-top:18px;border-top:1px solid var(--line);
+  }
+  .btn{
+    font-family:var(--sans);font-size:14px;font-weight:600;
+    padding:11px 22px;border-radius:var(--radius);cursor:pointer;border:1px solid transparent;
+  }
+  .btn-primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .btn-primary:hover{background:#111d33;}
+  .btn-primary:disabled{background:var(--ink-faint);border-color:var(--ink-faint);cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--ink-soft);border-color:var(--line);}
+  .btn-ghost:hover{border-color:var(--ink);color:var(--ink);}
+  .btn-gold{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .btn-gold:hover{background:var(--accent-deep);}
+
+  /* Success screen */
+  .success-screen{text-align:center;padding:40px 20px;}
+  .success-screen .ring{
+    width:64px;height:64px;border-radius:50%;background:var(--success);color:#fff;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:28px;
+  }
+  .success-screen h2{font-family:var(--serif);font-size:24px;margin:0 0 8px;}
+  .success-screen p{color:var(--ink-soft);font-size:14.5px;max-width:46ch;margin:0 auto 22px;line-height:1.6;}
+  .refid{
+    font-family:var(--serif);font-size:15px;letter-spacing:1px;background:var(--bg);
+    border:1px dashed var(--ink-faint);display:inline-block;padding:8px 16px;border-radius:var(--radius);margin-bottom:20px;
+  }
+
+  .toast{
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);
+    background:var(--ink);color:#fff;padding:11px 20px;border-radius:var(--radius);
+    font-size:13.5px;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .footer-note{
+    text-align:center;font-size:12px;color:var(--ink-faint);margin-top:34px;
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <div class="masthead">
+    <div class="brandmark">
+      <div class="glyph"><img src="logo.jpg" alt="AL-HAMID Networks logo"></div>
+      <div>
+        <h1>AL HAMID NETWORK COMPUTERS</h1>
+        <p>Admission &amp; JAMB application desk — Reliable · Fast · Trusted</p>
+      </div>
+    </div>
+    <div class="progress-figure">
+      <div class="num" id="progressNum">0%</div>
+      <div class="lbl">Application completion</div>
+    </div>
+  </div>
+
+  <div class="mobile-progress">
+    <div class="track"><div class="fill" id="mobileFill" style="width:0%"></div></div>
+    <div class="stagelabel" id="mobileStageLabel">Step 1 of 5 — Profile</div>
+  </div>
+
+  <div class="layout">
+    <nav class="stepper" id="stepper" aria-label="Application progress"></nav>
+    <main class="card" id="stageCard"></main>
+  </div>
+
+  <p class="footer-note">Your information is only used to prepare your application. Nothing is submitted to any institution until you tap Submit on the final step.</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   1. INSTITUTION ENGINE
+   Institution -> Admission Type -> Programme -> Required Fields/Docs
+   This is intentionally data-driven: add a school by adding one object
+   below — nothing in the form logic is hard-coded to a single school.
+   ===================================================================== */
+
+const ADMISSION_TYPES = {
+  university: [
+    { id:'utme', label:'UTME (JAMB Direct)', needsJamb:true, portalUrl:'https://www.jamb.gov.ng/efacility', portalLabel:'JAMB CAPS portal' },
+    { id:'de',   label:'Direct Entry',        needsJamb:true, deVariant:true, portalUrl:'https://www.jamb.gov.ng/efacility', portalLabel:'JAMB CAPS portal' }
+  ],
+  polytechnic: [
+    { id:'nd_ft', label:'ND Full-Time', needsJamb:true, portalUrl:'https://www.jamb.gov.ng/efacility', portalLabel:'JAMB CAPS portal' },
+    { id:'nd_pt', label:'ND Part-Time', needsJamb:false },
+    { id:'hnd',   label:'HND',          needsJamb:false }
+  ],
+  coe: [
+    { id:'nce_ft', label:'NCE Full-Time', needsJamb:true, portalUrl:'https://www.jamb.gov.ng/efacility', portalLabel:'JAMB CAPS portal' },
+    { id:'nce_pt', label:'NCE Part-Time', needsJamb:false }
+  ]
+};
+
+const PROGRAMMES_BY_CATEGORY = {
+  university: ['Computer Science','Accounting','Law','Mass Communication','Microbiology','Economics','Nursing Science','Electrical Engineering'],
+  polytechnic: ['Computer Science','Accountancy','Mass Communication','Electrical/Electronics Engineering','Business Administration','Statistics','Science Laboratory Technology'],
+  coe: ['Computer Science Education','English/Language Arts','Integrated Science','Social Studies','Primary Education Studies','Physical & Health Education']
+};
+
+// Sample institution bank — extend freely per ownership tier.
+const INSTITUTIONS = {
+  university: {
+    Federal: ['University of Lagos (UNILAG)','University of Ibadan (UI)','Ahmadu Bello University (ABU)','Federal University of Technology, Akure (FUTA)'],
+    State:   ['Lagos State University (LASU)','Rivers State University (RSU)','Ekiti State University (EKSU)'],
+    Private: ['Covenant University','Babcock University','Bowen University']
+  },
+  polytechnic: {
+    Federal: ['Yaba College of Technology (YABATECH)','Federal Polytechnic, Nekede','Federal Polytechnic, Ilaro'],
+    State:   ['Lagos State Polytechnic (LASPOTECH)','Kwara State Polytechnic'],
+    Private: ['Chrisland Polytechnic','Trinity Polytechnic']
+  },
+  coe: {
+    Federal: ['Federal College of Education, Akoka','Federal College of Education (Technical), Akoka'],
+    State:   ['Adeniran Ogunsanya College of Education (AOCOED)','Osun State College of Education'],
+    Private: ['Hilcrest College of Education']
+  }
+};
+
+const CATEGORY_LABEL = { university:'University', polytechnic:'Polytechnic', coe:'College of Education' };
+
+// Fill in real portal URLs as you gather them from each institution — the success
+// screen shows a "continue to portal" link only when one exists here, keyed by the
+// exact institution name as it appears in INSTITUTIONS above.
+// Example: 'University of Lagos (UNILAG)': 'https://portal.unilag.edu.ng'
+const INSTITUTION_PORTAL_URLS = {
+  // 'Institution name exactly as in INSTITUTIONS': 'https://...'
+};
+
+// Required-document sets, keyed by admission type id. "always" applies to every applicant.
+// `required:false` marks a document as optional — it's shown so the candidate can upload it
+// if they have it, but it never blocks progress or the completion percentage.
+const DOC_REQUIREMENTS = {
+  always: [
+    { key:'passport', name:'Passport Photograph', sub:'Optional — a clear recent photo helps, but you can submit without it', required:false },
+    { key:'nin',      name:'NIN Slip', sub:'Used only to complete this form — not shared with any third party', required:true }
+  ],
+  utme:   [ { key:'jambresult', name:'JAMB Result', sub:'UTME result slip', required:true }, { key:'jambslip', name:'JAMB Slip / CAPS', sub:"Optional — skip it if you're not familiar with this yet", required:false } ],
+  de:     [ { key:'jambresult', name:'JAMB Result', sub:'DE result slip', required:true }, { key:'jambslip', name:'JAMB Slip / CAPS', sub:"Optional — skip it if you're not familiar with this yet", required:false }, { key:'transcript', name:'Transcript / Certificate', sub:'Of prior qualification', required:true } ],
+  nd_ft:  [ { key:'jambresult', name:'JAMB Result', sub:'UTME result slip', required:true }, { key:'jambslip', name:'JAMB Slip / CAPS', sub:"Optional — skip it if you're not familiar with this yet", required:false } ],
+  nd_pt:  [],
+  hnd:    [ { key:'ndcert', name:'ND Certificate / Statement of Result', sub:'', required:true } ],
+  nce_ft: [ { key:'jambresult', name:'JAMB Result', sub:'UTME result slip', required:true }, { key:'jambslip', name:'JAMB Slip / CAPS', sub:"Optional — skip it if you're not familiar with this yet", required:false } ],
+  nce_pt: []
+};
+
+/* =====================================================================
+   2. APPLICATION STATE
+   ===================================================================== */
+const STAGES = [
+  { id:'profile',  num:'01', name:'Profile',          hint:'Personal & next of kin' },
+  { id:'admission',num:'02', name:'Admission',         hint:'Institution & programme' },
+  { id:'academic', num:'03', name:'Academic',          hint:'JAMB & O\u2019Level' },
+  { id:'documents',num:'04', name:'Documents',         hint:'Upload requirements' },
+  { id:'review',   num:'05', name:'Review & Submit',   hint:'Confirm & send' }
+];
+
+let currentStage = 0;
+let submitted = false;
+
+const state = {
+  // profile
+  fullname:'', phone:'', email:'', nin:'', dob:'', gender:'', religion:'', nationality:'Nigerian',
+  stateOfOrigin:'', lga:'', town:'', address:'',
+  kinName:'', kinRelationship:'', kinPhone:'', kinEmail:'', kinAddress:'',
+  // admission
+  category:'', ownership:'', institution:'', admissionType:'', programme:'',
+  customInstitutionMode:false, customProgrammeMode:false,
+  // academic — O'Level is picked, not typed out: the result slip photo comes via WhatsApp
+  jambRegNo:'', jambScore:'', jambSubjects:'',
+  examType1:'WAEC', examNumber1:'',
+  twoSittings:false, examType2:'WAEC', examNumber2:'',
+  // documents  key -> true once candidate ticks "I have this ready"
+  documents:{},
+  // payment
+  paymentConfirmed:false
+};
+
+/* =====================================================================
+   3. FIELD DEFINITIONS (drive both rendering + progress %)
+   ===================================================================== */
+function requiredProfileFields(){
+  return ['fullname','phone','email','nin','dob','gender','stateOfOrigin','lga','town','address',
+          'kinName','kinRelationship','kinPhone','kinAddress'];
+}
+function requiredAdmissionFields(){
+  return ['category','ownership','institution','admissionType','programme'];
+}
+function currentAdmissionMeta(){
+  if(!state.category || !state.admissionType) return null;
+  return (ADMISSION_TYPES[state.category]||[]).find(a=>a.id===state.admissionType) || null;
+}
+function requiredAcademicFields(){
+  const f = ['examType1','examNumber1'];
+  const meta = currentAdmissionMeta();
+  if(meta && meta.needsJamb) f.push('jambRegNo','jambScore');
+  if(state.twoSittings) f.push('examType2','examNumber2');
+  return f;
+}
+function requiredDocKeys(){
+  const meta = currentAdmissionMeta();
+  const list = [...DOC_REQUIREMENTS.always];
+  // O'Level result slip(s) — one upload per sitting the candidate used
+  const sittings = state.twoSittings ? 2 : 1;
+  for(let i=1;i<=sittings;i++){
+    list.push({ key:'olevel'+i, name:`O'Level Result — Sitting ${i}`, sub:'A clear photo/scan; the marked result is verified via WhatsApp after submission', required:true });
+  }
+  if(state.admissionType && DOC_REQUIREMENTS[state.admissionType]) list.push(...DOC_REQUIREMENTS[state.admissionType]);
+  return list;
+}
+
+/* =====================================================================
+   4. PROGRESS CALCULATION
+   ===================================================================== */
+function computeProgress(){
+  let total = 0, done = 0;
+
+  const pf = requiredProfileFields();
+  total += pf.length; done += pf.filter(k=>String(state[k]||'').trim()).length;
+
+  const af = requiredAdmissionFields();
+  total += af.length; done += af.filter(k=>String(state[k]||'').trim()).length;
+
+  const acf = requiredAcademicFields();
+  total += acf.length; done += acf.filter(k=>String(state[k]||'').trim()).length;
+
+  const docs = requiredDocKeys().filter(d=>d.required!==false);
+  total += docs.length; done += docs.filter(d=>state.documents[d.key]).length;
+  total += 1; done += state.paymentConfirmed ? 1 : 0;
+
+  total += 1; done += state.confirmChecked ? 1 : 0;
+
+  return total === 0 ? 0 : Math.round((done/total)*100);
+}
+
+/* =====================================================================
+   5. RENDER: STEPPER + MOBILE PROGRESS
+   ===================================================================== */
+function renderStepper(){
+  const nav = document.getElementById('stepper');
+  nav.innerHTML = STAGES.map((s,i)=>{
+    let cls='step';
+    if(i===currentStage) cls+=' active';
+    else if(i<currentStage) cls+=' done';
+    return `<div class="${cls}" data-idx="${i}">
+      <div class="dot"></div>
+      <div class="num">${s.num}</div>
+      <div class="name">${s.name}</div>
+      <div class="hint">${s.hint}</div>
+    </div>`;
+  }).join('');
+  nav.querySelectorAll('.step').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const idx = parseInt(el.dataset.idx,10);
+      if(idx <= currentStage || idx < furthestReachable()) goToStage(idx);
+    });
+  });
+
+  const pct = computeProgress();
+  document.getElementById('progressNum').textContent = pct + '%';
+  document.getElementById('mobileFill').style.width = pct + '%';
+  document.getElementById('mobileStageLabel').textContent = `Step ${currentStage+1} of 5 — ${STAGES[currentStage].name}`;
+}
+function furthestReachable(){
+  // allow revisiting any stage the user has already passed
+  return currentStage + 1;
+}
+
+/* =====================================================================
+   6. VALIDATION
+   ===================================================================== */
+function validateStage(idx){
+  const errors = [];
+  if(idx===0){
+    requiredProfileFields().forEach(k=>{ if(!String(state[k]||'').trim()) errors.push(k); });
+    if(state.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) errors.push('email');
+    if(state.nin && !/^\d{11}$/.test(state.nin)) errors.push('nin');
+  }
+  if(idx===1){
+    requiredAdmissionFields().forEach(k=>{ if(!String(state[k]||'').trim()) errors.push(k); });
+  }
+  if(idx===2){
+    requiredAcademicFields().forEach(k=>{ if(!String(state[k]||'').trim()) errors.push(k); });
+  }
+  if(idx===3){
+    requiredDocKeys().filter(d=>d.required!==false).forEach(d=>{ if(!state.documents[d.key]) errors.push('doc:'+d.key); });
+    if(!state.paymentConfirmed) errors.push('payment');
+  }
+  if(idx===4){
+    if(!state.confirmChecked) errors.push('confirm');
+  }
+  return errors;
+}
+
+/* =====================================================================
+   7. RENDER STAGES
+   ===================================================================== */
+function renderStage(){
+  renderStepper();
+  const card = document.getElementById('stageCard');
+  if(submitted){ card.innerHTML = renderSuccess(); attachSuccessHandlers(); return; }
+
+  switch(STAGES[currentStage].id){
+    case 'profile':   card.innerHTML = renderProfile(); attachProfileHandlers(); break;
+    case 'admission': card.innerHTML = renderAdmission(); attachAdmissionHandlers(); break;
+    case 'academic':  card.innerHTML = renderAcademic(); attachAcademicHandlers(); break;
+    case 'documents': card.innerHTML = renderDocuments(); attachDocumentHandlers(); break;
+    case 'review':    card.innerHTML = renderReview(); attachReviewHandlers(); break;
+  }
+}
+
+function navButtons(nextLabel, opts={}){
+  return `<div class="stage-nav">
+    <button class="btn btn-ghost" id="btnBack" ${currentStage===0?'disabled style="visibility:hidden"':''}>&larr; Back</button>
+    <button class="btn ${opts.gold?'btn-gold':'btn-primary'}" id="btnNext">${nextLabel} ${opts.arrow!==false?'&rarr;':''}</button>
+  </div>`;
+}
+
+/* ---- Stage 1: Profile ---- */
+function renderProfile(){
+  return `
+  <div class="stage-head">
+    <div class="eyebrow">STEP 1 OF 5</div>
+    <h2>Personal information</h2>
+    <p>Tell us who is applying and who we should contact if we can't reach you.</p>
+  </div>
+
+  <div class="grid">
+    ${input('fullname','Full name (Surname, First, Middle)','text','e.g. Adeyemi, Musa Chinedu')}
+    ${input('phone','Phone number','tel','080XXXXXXXX')}
+    ${input('email','Email address','email','you@example.com')}
+    ${input('nin','NIN','text','11-digit National Identity Number')}
+    ${input('dob','Date of birth','date')}
+    ${selectField('gender','Gender',['Male','Female'])}
+    ${selectField('religion','Religion',['Christianity','Islam','Other'],true)}
+    ${input('nationality','Nationality','text')}
+    ${input('stateOfOrigin','State of origin','text','e.g. Kaduna')}
+    ${input('lga','Local Government Area','text')}
+    ${input('town','Town / City','text')}
+  </div>
+  ${textarea('address','Residential address')}
+
+  <hr class="section-divider">
+  <div class="subhead">Next of kin</div>
+  <p class="subhead-note">Someone we can reach if we can't reach you.</p>
+  <div class="grid">
+    ${input('kinName','Next of kin name','text')}
+    ${input('kinRelationship','Relationship to you','text','e.g. Father, Sister')}
+    ${input('kinPhone','Phone number','tel')}
+    ${input('kinEmail','Email address (optional)','email')}
+  </div>
+  ${textarea('kinAddress','Residential address')}
+
+  ${navButtons('Continue to Admission')}
+  `;
+}
+function attachProfileHandlers(){ bindInputs(); bindNav(); }
+
+/* ---- Stage 2: Admission ---- */
+function renderAdmission(){
+  const cat = state.category;
+  const ownerships = cat ? Object.keys(INSTITUTIONS[cat]) : [];
+  const institutions = (cat && state.ownership) ? INSTITUTIONS[cat][state.ownership] : [];
+  const admissionOptions = cat ? ADMISSION_TYPES[cat] : [];
+  const programmes = cat ? PROGRAMMES_BY_CATEGORY[cat] : [];
+
+  return `
+  <div class="stage-head">
+    <div class="eyebrow">STEP 2 OF 5</div>
+    <h2>Institution &amp; admission</h2>
+    <p>What you see next is driven entirely by the institution type you pick here.</p>
+  </div>
+
+  <fieldset>
+    <legend>Institution category</legend>
+    <div class="radiorow" id="categoryRow">
+      ${Object.keys(CATEGORY_LABEL).map(c=>`
+        <label class="${state.category===c?'checked':''}">
+          <input type="radio" name="category" value="${c}" ${state.category===c?'checked':''}> ${CATEGORY_LABEL[c]}
+        </label>`).join('')}
+    </div>
+  </fieldset>
+
+  <div class="grid" id="ownershipInstitutionWrap" style="${cat?'':'display:none'}">
+    <div class="field">
+      <label>Ownership</label>
+      <select id="ownershipSelect">
+        <option value="">Select ownership</option>
+        ${ownerships.map(o=>`<option value="${o}" ${state.ownership===o?'selected':''}>${o}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field">
+      ${state.customInstitutionMode ? `
+        <label for="customInstitutionInput">School's name</label>
+        <input type="text" id="customInstitutionInput" placeholder="Type your school's full name" value="${(state.institution||'').replace(/"/g,'&quot;')}">
+        <div class="helptext">Added to the list automatically once you move on — future applicants will find it in the dropdown. <a href="#" id="backToInstitutionList" style="color:var(--accent-deep);">Choose from the list instead</a></div>
+      ` : `
+        <label>Institution</label>
+        <select id="institutionSelect" ${state.ownership?'':'disabled'}>
+          <option value="">${state.ownership?'Select institution':'Select ownership first'}</option>
+          ${institutions.map(i=>`<option value="${i}" ${state.institution===i?'selected':''}>${i}</option>`).join('')}
+          ${state.ownership?`<option value="__other__">+ My school isn't listed — type it in</option>`:''}
+        </select>
+      `}
+    </div>
+  </div>
+
+  <div class="grid" id="admissionProgWrap" style="${cat?'':'display:none'}">
+    <div class="field">
+      <label>Admission type</label>
+      <select id="admissionTypeSelect">
+        <option value="">Select admission type</option>
+        ${admissionOptions.map(a=>`<option value="${a.id}" ${state.admissionType===a.id?'selected':''}>${a.label}</option>`).join('')}
+      </select>
+      <div class="helptext">This determines the documents you'll be asked for later.</div>
+    </div>
+    <div class="field">
+      ${state.customProgrammeMode ? `
+        <label for="customProgrammeInput">Programme name</label>
+        <input type="text" id="customProgrammeInput" placeholder="Type the programme you want to study" value="${(state.programme||'').replace(/"/g,'&quot;')}">
+        <div class="helptext">Added to the list automatically once you move on. <a href="#" id="backToProgrammeList" style="color:var(--accent-deep);">Choose from the list instead</a></div>
+      ` : `
+        <label>Programme</label>
+        <select id="programmeSelect">
+          <option value="">Select programme</option>
+          ${programmes.map(p=>`<option value="${p}" ${state.programme===p?'selected':''}>${p}</option>`).join('')}
+          <option value="__other__">+ My programme isn't listed — type it in</option>
+        </select>
+      `}
+    </div>
+  </div>
+
+  ${navButtons('Continue to Academic')}
+  `;
+}
+function attachAdmissionHandlers(){
+  document.querySelectorAll('#categoryRow input[type=radio]').forEach(r=>{
+    r.addEventListener('change', ()=>{
+      state.category = r.value;
+      state.ownership=''; state.institution=''; state.admissionType=''; state.programme='';
+      state.customInstitutionMode=false; state.customProgrammeMode=false;
+      renderStage();
+    });
+  });
+  const own = document.getElementById('ownershipSelect');
+  if(own) own.addEventListener('change', ()=>{ state.ownership=own.value; state.institution=''; state.customInstitutionMode=false; renderStage(); });
+
+  const inst = document.getElementById('institutionSelect');
+  if(inst) inst.addEventListener('change', ()=>{
+    if(inst.value==='__other__'){ state.customInstitutionMode=true; state.institution=''; renderStage(); }
+    else { state.institution=inst.value; }
+  });
+  const customInst = document.getElementById('customInstitutionInput');
+  if(customInst){
+    customInst.addEventListener('change', ()=> commitCustomInstitution(customInst.value));
+    customInst.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); customInst.blur(); } });
+  }
+  const backInst = document.getElementById('backToInstitutionList');
+  if(backInst) backInst.addEventListener('click', (e)=>{ e.preventDefault(); state.customInstitutionMode=false; state.institution=''; renderStage(); });
+
+  const admT = document.getElementById('admissionTypeSelect');
+  if(admT) admT.addEventListener('change', ()=>{ state.admissionType=admT.value; renderStepper(); });
+
+  const prog = document.getElementById('programmeSelect');
+  if(prog) prog.addEventListener('change', ()=>{
+    if(prog.value==='__other__'){ state.customProgrammeMode=true; state.programme=''; renderStage(); }
+    else { state.programme=prog.value; }
+  });
+  const customProg = document.getElementById('customProgrammeInput');
+  if(customProg){
+    customProg.addEventListener('change', ()=> commitCustomProgramme(customProg.value));
+    customProg.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); customProg.blur(); } });
+  }
+  const backProg = document.getElementById('backToProgrammeList');
+  if(backProg) backProg.addEventListener('click', (e)=>{ e.preventDefault(); state.customProgrammeMode=false; state.programme=''; renderStage(); });
+
+  bindNav();
+}
+
+function commitCustomInstitution(value){
+  const name = value.trim();
+  if(!name || !state.category || !state.ownership) return;
+  if(!INSTITUTIONS[state.category][state.ownership]) INSTITUTIONS[state.category][state.ownership] = [];
+  if(!INSTITUTIONS[state.category][state.ownership].includes(name)){
+    INSTITUTIONS[state.category][state.ownership].push(name);
+    suggestNewEntry('addInstitution', { category:state.category, ownership:state.ownership, institution:name });
+  }
+  state.institution = name;
+  state.customInstitutionMode = false;
+  renderStage();
+  showToast('School added — it will appear in the dropdown next time');
+}
+function commitCustomProgramme(value){
+  const name = value.trim();
+  if(!name || !state.category) return;
+  if(!PROGRAMMES_BY_CATEGORY[state.category].includes(name)){
+    PROGRAMMES_BY_CATEGORY[state.category].push(name);
+    suggestNewEntry('addProgramme', { category:state.category, programme:name });
+  }
+  state.programme = name;
+  state.customProgrammeMode = false;
+  renderStage();
+  showToast('Programme added — it will appear in the dropdown next time');
+}
+
+/* ---- Stage 3: Academic ---- */
+function renderAcademic(){
+  const meta = currentAdmissionMeta();
+  const needsJamb = meta ? meta.needsJamb : true;
+
+  return `
+  <div class="stage-head">
+    <div class="eyebrow">STEP 3 OF 5</div>
+    <h2>Academic record</h2>
+    <p>${needsJamb ? 'Your JAMB details, plus your O\u2019Level result.' : 'Your O\u2019Level result. This admission route does not require JAMB.'}</p>
+  </div>
+
+  ${needsJamb ? `
+  <div class="grid">
+    ${input('jambRegNo','JAMB registration number','text')}
+    ${input('jambScore','JAMB score','number','out of 400')}
+  </div>
+  ${textarea('jambSubjects','JAMB subjects combination (optional)')}
+  <hr class="section-divider">
+  ` : ''}
+
+  <div class="subhead">O'Level result</div>
+  <p class="subhead-note">No need to type out subjects and grades — pick how you sat the exam, then send a clear photo of the actual result slip on WhatsApp once you submit. We verify it from there.</p>
+
+  <div class="grid" style="grid-template-columns:1fr 1fr;">
+    ${selectField('examType1','Examination body (1st sitting)',['WAEC','NECO','NABTEB'])}
+    ${input('examNumber1','Examination number (1st sitting)','text')}
+  </div>
+
+  <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;margin:2px 0 16px;cursor:pointer;">
+    <input type="checkbox" id="twoSittingsCheck" ${state.twoSittings?'checked':''}>
+    I used two sittings to complete my O'Level
+  </label>
+
+  ${state.twoSittings ? `
+  <div class="grid" style="grid-template-columns:1fr 1fr;">
+    ${selectField('examType2','Examination body (2nd sitting)',['WAEC','NECO','NABTEB'])}
+    ${input('examNumber2','Examination number (2nd sitting)','text')}
+  </div>
+  ` : ''}
+
+  ${navButtons('Continue to Documents')}
+  `;
+}
+function attachAcademicHandlers(){
+  bindInputs();
+  const twoCheck = document.getElementById('twoSittingsCheck');
+  if(twoCheck) twoCheck.addEventListener('change', ()=>{
+    state.twoSittings = twoCheck.checked;
+    renderStage();
+  });
+  bindNav();
+}
+
+/* ---- Stage 4: Documents & payment ---- */
+function renderDocuments(){
+  const docs = requiredDocKeys();
+  return `
+  <div class="stage-head">
+    <div class="eyebrow">STEP 4 OF 5</div>
+    <h2>Documents &amp; payment</h2>
+    <p>Nothing is uploaded here. Tick what you have ready — you'll snap and send the actual copies on WhatsApp right after you submit.</p>
+  </div>
+  <div class="doclist">
+    ${docs.map(d=>`
+      <div class="docrow ${state.documents[d.key]?'satisfied':''}" id="docrow-${d.key}">
+        <div class="docinfo">
+          <div class="check">${state.documents[d.key]?'&#10003;':''}</div>
+          <div>
+            <div class="docname">${d.name}${d.required===false?' <span class="opt">(optional)</span>':''}</div>
+            ${d.sub?`<div class="docsub">${d.sub}</div>`:''}
+          </div>
+        </div>
+        <button type="button" class="filebtn" data-key="${d.key}">${state.documents[d.key]?'Ready ✓':'I have this'}</button>
+      </div>
+    `).join('')}
+  </div>
+  <p class="helptext" style="margin-top:14px;">Ticking a document just tells us to expect it — send a clear photo or scan of each one on WhatsApp straight after you submit here.</p>
+
+  <hr class="section-divider">
+  <div class="subhead">Processing payment</div>
+  <p class="subhead-note">Via Opay or PalmPay — Adegboyega Abdulhamid Chukwebuka.</p>
+  <div class="grid" style="grid-template-columns:1fr 1fr;">
+    <div class="field">
+      <label>Opay</label>
+      <input type="text" value="8166475155" readonly>
+    </div>
+    <div class="field">
+      <label>PalmPay</label>
+      <input type="text" value="8188457102" readonly>
+    </div>
+  </div>
+  <div class="field" id="wrap-payment">
+    <label style="display:flex;align-items:flex-start;gap:8px;font-weight:400;cursor:pointer;">
+      <input type="checkbox" id="paymentCheck" ${state.paymentConfirmed?'checked':''} style="margin-top:2px;accent-color:var(--accent-deep);">
+      <span>I've made the processing payment and will send proof of payment on WhatsApp right after submitting.</span>
+    </label>
+    <div class="err">Please confirm payment before continuing.</div>
+  </div>
+
+  ${navButtons('Continue to Review')}
+  `;
+}
+function attachDocumentHandlers(){
+  document.querySelectorAll('.filebtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.dataset.key;
+      state.documents[key] = !state.documents[key];
+      renderStage();
+    });
+  });
+  const payCheck = document.getElementById('paymentCheck');
+  if(payCheck) payCheck.addEventListener('change', ()=>{
+    state.paymentConfirmed = payCheck.checked;
+    const wrap = document.getElementById('wrap-payment');
+    if(wrap) wrap.classList.remove('invalid');
+    renderStepper();
+  });
+  bindNav();
+}
+
+/* ---- Stage 5: Review & Submit ---- */
+function reviewItem(label, value){
+  const missing = !value;
+  return `<div class="review-item"><dt>${label}</dt><dd class="${missing?'missing':''}">${missing?'Not provided':value}</dd></div>`;
+}
+function renderReview(){
+  const meta = currentAdmissionMeta();
+  const admissionLabel = meta ? meta.label : '';
+  const docs = requiredDocKeys();
+
+  return `
+  <div class="stage-head">
+    <div class="eyebrow">STEP 5 OF 5</div>
+    <h2>Review your application</h2>
+    <p>Check every section carefully. Once you confirm, your summary is sent to us on WhatsApp for processing.</p>
+  </div>
+
+  <details class="review-block" open>
+    <summary>Personal information <span class="editlink" data-goto="0">Edit</span></summary>
+    <div class="review-grid">
+      ${reviewItem('Full name', state.fullname)}
+      ${reviewItem('Phone', state.phone)}
+      ${reviewItem('Email', state.email)}
+      ${reviewItem('NIN', state.nin)}
+      ${reviewItem('Date of birth', state.dob)}
+      ${reviewItem('Gender', state.gender)}
+      ${reviewItem('State of origin', state.stateOfOrigin)}
+      ${reviewItem('LGA', state.lga)}
+      ${reviewItem('Town/City', state.town)}
+      ${reviewItem('Address', state.address)}
+    </div>
+  </details>
+
+  <details class="review-block">
+    <summary>Next of kin <span class="editlink" data-goto="0">Edit</span></summary>
+    <div class="review-grid">
+      ${reviewItem('Name', state.kinName)}
+      ${reviewItem('Relationship', state.kinRelationship)}
+      ${reviewItem('Phone', state.kinPhone)}
+      ${reviewItem('Address', state.kinAddress)}
+    </div>
+  </details>
+
+  <details class="review-block" open>
+    <summary>Institution &amp; programme <span class="editlink" data-goto="1">Edit</span></summary>
+    <div class="review-grid">
+      ${reviewItem('Category', CATEGORY_LABEL[state.category])}
+      ${reviewItem('Ownership', state.ownership)}
+      ${reviewItem('Institution', state.institution)}
+      ${reviewItem('Admission type', admissionLabel)}
+      ${reviewItem('Programme', state.programme)}
+    </div>
+  </details>
+
+  <details class="review-block">
+    <summary>JAMB information <span class="editlink" data-goto="2">Edit</span></summary>
+    <div class="review-grid">
+      ${reviewItem('Registration number', state.jambRegNo)}
+      ${reviewItem('Score', state.jambScore)}
+      ${reviewItem('Subjects', state.jambSubjects)}
+    </div>
+  </details>
+
+  <details class="review-block">
+    <summary>O'Level <span class="editlink" data-goto="2">Edit</span></summary>
+    <div class="review-grid">
+      ${reviewItem('Sitting 1', (state.examType1 && state.examNumber1) ? `${state.examType1} — ${state.examNumber1}` : '')}
+      ${state.twoSittings ? reviewItem('Sitting 2', (state.examType2 && state.examNumber2) ? `${state.examType2} — ${state.examNumber2}` : '') : ''}
+    </div>
+  </details>
+
+  <details class="review-block">
+    <summary>Documents <span class="editlink" data-goto="3">Edit</span></summary>
+    <div class="review-grid">
+      ${docs.map(d=>reviewItem(d.name, state.documents[d.key] ? 'Ready to send' : '')).join('')}
+    </div>
+  </details>
+
+  <details class="review-block">
+    <summary>Payment <span class="editlink" data-goto="3">Edit</span></summary>
+    <div class="review-grid">
+      ${reviewItem('Status', state.paymentConfirmed ? 'Confirmed — proof to follow on WhatsApp' : '')}
+    </div>
+  </details>
+
+  <div class="confirm-row">
+    <input type="checkbox" id="confirmCheck" ${state.confirmChecked?'checked':''}>
+    <label for="confirmCheck">I confirm that the information supplied above is accurate to the best of my knowledge, and I understand incorrect details may affect admission processing.</label>
+  </div>
+
+  <div class="stage-nav">
+    <button class="btn btn-ghost" id="btnBack">&larr; Back</button>
+    <button class="btn btn-gold" id="btnSubmit" ${state.confirmChecked?'':'disabled'}>Submit application</button>
+  </div>
+  `;
+}
+function attachReviewHandlers(){
+  document.querySelectorAll('[data-goto]').forEach(el=>{
+    el.addEventListener('click', (e)=>{ e.preventDefault(); goToStage(parseInt(el.dataset.goto,10)); });
+  });
+  const chk = document.getElementById('confirmCheck');
+  chk.addEventListener('change', ()=>{
+    state.confirmChecked = chk.checked;
+    document.getElementById('btnSubmit').disabled = !chk.checked;
+    renderStepper();
+  });
+  document.getElementById('btnBack').addEventListener('click', ()=> goToStage(currentStage-1));
+  document.getElementById('btnSubmit').addEventListener('click', submitApplication);
+}
+
+/* ---- Success screen ---- */
+function renderSuccess(){
+  const ref = state.refId || (state.refId = 'AH-' + Math.random().toString(36).slice(2,8).toUpperCase());
+  const meta = currentAdmissionMeta();
+  const specificUrl = INSTITUTION_PORTAL_URLS[state.institution];
+  const fallbackUrl = meta && meta.needsJamb ? meta.portalUrl : null;
+  const portalUrl = specificUrl || fallbackUrl;
+  const portalLabel = specificUrl ? `${state.institution}'s portal` : (meta && meta.portalLabel) || 'the institution portal';
+
+  return `
+  <div class="success-screen">
+    <div class="ring">&#10003;</div>
+    <h2>Application summary ready</h2>
+    <div class="refid">Ref: ${ref}</div>
+    <p>Your summary has been prepared. Tap the button below to send it to AL HAMID NETWORK COMPUTERS on WhatsApp — send the documents you ticked as clear photos in the same chat, followed by your proof of payment.</p>
+    <button class="btn btn-gold" id="openWhatsapp" style="margin-bottom:12px;">Send summary on WhatsApp &rarr;</button>
+    <div><button class="btn btn-ghost" id="copySummary">Copy summary text</button></div>
+    ${portalUrl ? `
+      <div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line);">
+        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:10px;">Once your payment is confirmed, and requested documents are send clearly on Whatsapp count on use for feedback for printouts and PDF (showing evidence of sucessful registration) you can also continue directly on ${portalLabel}:</p>
+        <a href="${portalUrl}" target="_blank" rel="noopener" class="btn btn-ghost" style="text-decoration:none;display:inline-block;">Open ${portalLabel} &rarr;</a>
+      </div>
+    ` : ''}
+  </div>`;
+}
+function attachSuccessHandlers(){
+  document.getElementById('openWhatsapp').addEventListener('click', ()=>{
+    const text = encodeURIComponent(buildWhatsAppSummary());
+    window.open(`https://wa.me/2348166475155?text=${text}`, '_blank');
+  });
+  document.getElementById('copySummary').addEventListener('click', ()=>{
+    navigator.clipboard.writeText(buildWhatsAppSummary()).then(()=> showToast('Summary copied'));
+  });
+}
+
+/* =====================================================================
+   8. SHARED FIELD BUILDERS
+   ===================================================================== */
+function input(key,label,type='text',placeholder=''){
+  return `<div class="field" id="wrap-${key}">
+    <label for="f-${key}">${label}</label>
+    <input id="f-${key}" data-key="${key}" type="${type}" value="${(state[key]||'').toString().replace(/"/g,'&quot;')}" placeholder="${placeholder}">
+    <div class="err">This field is required.</div>
+  </div>`;
+}
+function textarea(key,label){
+  return `<div class="field" id="wrap-${key}">
+    <label for="f-${key}">${label}</label>
+    <textarea id="f-${key}" data-key="${key}">${state[key]||''}</textarea>
+    <div class="err">This field is required.</div>
+  </div>`;
+}
+function selectField(key,label,options,optional=false){
+  return `<div class="field" id="wrap-${key}">
+    <label for="f-${key}">${label} ${optional?'<span class="opt">(optional)</span>':''}</label>
+    <select id="f-${key}" data-key="${key}">
+      <option value="">Select</option>
+      ${options.map(o=>`<option value="${o}" ${state[key]===o?'selected':''}>${o}</option>`).join('')}
+    </select>
+  </div>`;
+}
+function bindInputs(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    el.addEventListener('input', ()=>{ state[el.dataset.key]=el.value; renderStepper(); });
+    el.addEventListener('change', ()=>{ state[el.dataset.key]=el.value; renderStepper(); });
+  });
+}
+function bindNav(){
+  const back = document.getElementById('btnBack');
+  const next = document.getElementById('btnNext');
+  if(back) back.addEventListener('click', ()=> goToStage(currentStage-1));
+  if(next) next.addEventListener('click', ()=>{
+    const errors = validateStage(currentStage);
+    if(errors.length){
+      errors.forEach(k=>{
+        const wrap = document.getElementById('wrap-'+k);
+        if(wrap) wrap.classList.add('invalid');
+      });
+      showToast('Please complete the highlighted fields');
+      return;
+    }
+    goToStage(currentStage+1);
+  });
+}
+
+/* =====================================================================
+   9. NAVIGATION
+   ===================================================================== */
+function goToStage(idx){
+  if(idx<0 || idx>=STAGES.length) return;
+  currentStage = idx;
+  window.scrollTo({top:0, behavior:'smooth'});
+  renderStage();
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> t.classList.remove('show'), 2600);
+}
+
+/* =====================================================================
+   10. SUBMIT: BUILD SUMMARY, LOG TO GOOGLE SHEETS, HAND OFF TO WHATSAPP
+   ===================================================================== */
+function buildWhatsAppSummary(){
+  const meta = currentAdmissionMeta();
+  const olevelLines = [`Sitting 1: ${state.examType1} — ${state.examNumber1||'N/A'}`];
+  if(state.twoSittings) olevelLines.push(`Sitting 2: ${state.examType2} — ${state.examNumber2||'N/A'}`);
+  return [
+    `*ND_FT (100L) APPLICATION — ${state.refId}*`,
+    ``,
+    `*PERSONAL INFORMATION*`,
+    `Full Name: ${state.fullname}`,
+    `Phone: ${state.phone}`,
+    `Email: ${state.email}`,
+    `NIN: ${state.nin}`,
+    `DOB: ${state.dob}`,
+    `Gender: ${state.gender}`,
+    `State of Origin: ${state.stateOfOrigin}`,
+    `LGA: ${state.lga}`,
+    `Town/City: ${state.town}`,
+    `Address: ${state.address}`,
+    ``,
+    `*NEXT OF KIN*`,
+    `Name: ${state.kinName} (${state.kinRelationship})`,
+    `Phone: ${state.kinPhone}`,
+    `Address: ${state.kinAddress}`,
+    ``,
+    `*ADMISSION*`,
+    `Institution: ${state.institution} (${CATEGORY_LABEL[state.category]} — ${state.ownership})`,
+    `Admission Type: ${meta?meta.label:''}`,
+    `Programme: ${state.programme}`,
+    ``,
+    `*JAMB*`,
+    `Reg No: ${state.jambRegNo||'N/A'}   Score: ${state.jambScore||'N/A'}`,
+    ``,
+    `*O'LEVEL*`,
+    ...olevelLines,
+    `(Result slip photo(s) to follow in this chat)`,
+    ``,
+    `Documents to follow in this chat: ${requiredDocKeys().filter(d=>state.documents[d.key]).map(d=>d.name).join(', ') || 'None ticked yet'}`,
+    ``,
+    `*PAYMENT*`,
+    state.paymentConfirmed ? 'Payment made — proof of payment to follow in this chat' : 'Not yet confirmed',
+  ].join('\n');
+}
+
+async function submitApplication(){
+  const errors = validateStage(4);
+  if(errors.length){ showToast('Please confirm the checkbox first'); return; }
+
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  await logToGoogleSheets();
+
+  submitted = true;
+  renderStage();
+}
+
+// Google Sheets is logged via a Google Apps Script Web App deployed from
+// the companion Code.gs file (see SETUP.md). Paste the deployed /exec URL below.
+const GOOGLE_SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzKYbSLXLWV-VBBxaWS-3ZLhEqfsA4FcqzPgd6NmjGn8aPxX6gOt2VmfSKG9oV2HRnq/exec';
+
+async function logToGoogleSheets(){
+  if(!GOOGLE_SHEETS_WEBHOOK_URL || GOOGLE_SHEETS_WEBHOOK_URL.indexOf('PASTE_') === 0){
+    return; // not configured yet — skip silently, WhatsApp handoff still works
+  }
+  const meta = currentAdmissionMeta();
+  const payload = {
+    refId: state.refId || (state.refId = 'AH-' + Math.random().toString(36).slice(2,8).toUpperCase()),
+    timestamp: new Date().toISOString(),
+    fullname: state.fullname, phone: state.phone, email: state.email, nin: state.nin, dob: state.dob,
+    gender: state.gender, religion: state.religion, nationality: state.nationality,
+    stateOfOrigin: state.stateOfOrigin, lga: state.lga, town: state.town, address: state.address,
+    kinName: state.kinName, kinRelationship: state.kinRelationship, kinPhone: state.kinPhone,
+    kinEmail: state.kinEmail, kinAddress: state.kinAddress,
+    category: CATEGORY_LABEL[state.category], ownership: state.ownership, institution: state.institution,
+    admissionType: meta?meta.label:'', programme: state.programme,
+    jambRegNo: state.jambRegNo, jambScore: state.jambScore, jambSubjects: state.jambSubjects,
+    examType1: state.examType1, examNumber1: state.examNumber1,
+    twoSittings: state.twoSittings, examType2: state.examType2, examNumber2: state.examNumber2,
+    documents: Object.entries(state.documents).filter(([k,v])=>v).map(([k])=>k).join('; '),
+    paymentConfirmed: state.paymentConfirmed ? 'yes' : 'no'
+  };
+  try{
+    await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+      method:'POST',
+      mode:'no-cors', // Apps Script web apps don't return CORS headers by default
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action:'submitApplication', ...payload })
+    });
+  }catch(e){
+    console.warn('Could not reach Google Sheets webhook', e);
+  }
+}
+
+/* =====================================================================
+   10b. SHARED SCHOOL/PROGRAMME DIRECTORY
+   New institutions/programmes typed in by candidates are pushed to the
+   Apps Script backend (see Code.gs) and, once configured, pulled back
+   down on every page load — so "for subsequent candidates" holds true
+   across devices, not just within one browser session.
+   ===================================================================== */
+async function suggestNewEntry(action, payload){
+  if(!GOOGLE_SHEETS_WEBHOOK_URL || GOOGLE_SHEETS_WEBHOOK_URL.indexOf('PASTE_') === 0) return;
+  try{
+    await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action, ...payload })
+    });
+  }catch(e){
+    console.warn('Could not save new directory entry', e);
+  }
+}
+async function loadSharedDirectory(){
+  if(!GOOGLE_SHEETS_WEBHOOK_URL || GOOGLE_SHEETS_WEBHOOK_URL.indexOf('PASTE_') === 0) return;
+  try{
+    const res = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, { method:'GET' });
+    if(!res.ok) return;
+    const data = await res.json();
+    (data.institutions||[]).forEach(row=>{
+      if(!INSTITUTIONS[row.category]) return;
+      if(!INSTITUTIONS[row.category][row.ownership]) INSTITUTIONS[row.category][row.ownership] = [];
+      if(!INSTITUTIONS[row.category][row.ownership].includes(row.institution)) INSTITUTIONS[row.category][row.ownership].push(row.institution);
+    });
+    (data.programmes||[]).forEach(row=>{
+      if(!PROGRAMMES_BY_CATEGORY[row.category]) return;
+      if(!PROGRAMMES_BY_CATEGORY[row.category].includes(row.programme)) PROGRAMMES_BY_CATEGORY[row.category].push(row.programme);
+    });
+    renderStage(); // refresh in case the admission stage is already visible
+  }catch(e){
+    console.warn('Could not load shared school/programme directory', e);
+  }
+}
+
+/* =====================================================================
+   11. INIT
+   ===================================================================== */
+renderStage();
+loadSharedDirectory();
+</script>
+</body>
+</html>
