@@ -4,21 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admission Application — AL HAMID NETWORK COMPUTERS</title>
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/jpeg" href="logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F7F5EF;
+    --bg:#F5F8FC;
     --surface:#FFFFFF;
-    --ink:#1B2A4A;
-    --ink-soft:#5A6478;
-    --ink-faint:#8992A3;
-    --accent:#B8860B;
-    --accent-deep:#8C6D1F;
-    --accent-tint:#F3EAD2;
-    --line:#E1DACB;
+    --field-bg:#F5F8FC;
+    --ink:#2A1B4D;
+    --ink-soft:#5B5480;
+    --ink-faint:#9C97B8;
+    --accent:#1E73BE;
+    --accent-deep:#144E86;
+    --accent-tint:#E7F2FB;
+    --line:#DEE4F2;
     --success:#2F6B4F;
     --success-tint:#E6EFE9;
     --error:#B3432B;
@@ -27,6 +29,31 @@
     --serif:'Source Serif 4', Georgia, serif;
     --sans:'Public Sans', -apple-system, Segoe UI, sans-serif;
   }
+  :root[data-theme="dark"]{
+    --bg:#191229;
+    --surface:#231A38;
+    --field-bg:#2B2144;
+    --ink:#EEEBF9;
+    --ink-soft:#B7AFD6;
+    --ink-faint:#807897;
+    --accent:#5AACEE;
+    --accent-deep:#8CC6F5;
+    --accent-tint:#28304A;
+    --line:#38304F;
+    --success:#5BC191;
+    --success-tint:#1E3A2E;
+    --error:#E58366;
+    --error-tint:#3B2621;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]):not([data-theme="dark"]){
+      --bg:#191229; --surface:#231A38; --field-bg:#2B2144;
+      --ink:#EEEBF9; --ink-soft:#B7AFD6; --ink-faint:#807897;
+      --accent:#5AACEE; --accent-deep:#8CC6F5; --accent-tint:#28304A;
+      --line:#38304F; --success:#5BC191; --success-tint:#1E3A2E;
+      --error:#E58366; --error-tint:#3B2621;
+    }
+  }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -34,6 +61,7 @@
     font-family:var(--sans);
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
+    transition:background .2s ease, color .2s ease;
   }
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
@@ -62,12 +90,12 @@
   }
   .brandmark .glyph{
     width:46px;height:46px;
-    border:1.5px solid var(--ink);
+    border:1.5px solid var(--accent);
     border-radius:50%;
     overflow:hidden;
     display:flex;align-items:center;justify-content:center;
     flex-shrink:0;
-    background:#EAF4FB;
+    background:var(--accent-tint);
   }
   .brandmark .glyph img{
     width:100%;height:100%;
@@ -101,6 +129,20 @@
     color:var(--ink-soft);
     margin-top:2px;
   }
+  .theme-toggle{
+    display:inline-flex;align-items:center;gap:6px;
+    margin-top:8px;
+    padding:6px 12px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:var(--surface);
+    color:var(--ink-soft);
+    font-family:var(--sans);
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .theme-toggle:hover{border-color:var(--accent);color:var(--accent-deep);}
 
   /* ---------- Layout: stepper + content ---------- */
   .layout{
@@ -209,7 +251,7 @@
     padding:10px 12px;
     border:1px solid var(--line);
     border-radius:var(--radius);
-    background:var(--bg);
+    background:var(--field-bg);
     font-family:var(--sans);
     font-size:14px;
     color:var(--ink);
@@ -228,7 +270,7 @@
   .radiorow label{
     display:flex;align-items:center;gap:7px;
     border:1px solid var(--line);border-radius:var(--radius);
-    padding:9px 14px;font-size:13.5px;cursor:pointer;background:var(--bg);
+    padding:9px 14px;font-size:13.5px;cursor:pointer;background:var(--field-bg);
   }
   .radiorow input{accent-color:var(--accent);}
   .radiorow label.checked{border-color:var(--accent);background:var(--accent-tint);}
@@ -250,7 +292,7 @@
   .olevel-table td{padding:4px 8px 4px 0;}
   .olevel-table input,.olevel-table select{
     width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius);
-    background:var(--bg);font-size:13.5px;font-family:var(--sans);
+    background:var(--field-bg);font-size:13.5px;font-family:var(--sans);
   }
   .rowbtn{
     background:none;border:1px dashed var(--ink-faint);color:var(--ink-soft);
@@ -262,7 +304,7 @@
   .doclist{display:flex;flex-direction:column;gap:10px;}
   .docrow{
     display:flex;align-items:center;justify-content:space-between;gap:14px;
-    border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--bg);
+    border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--field-bg);
   }
   .docrow.satisfied{border-color:var(--success);background:var(--success-tint);}
   .docrow .docinfo{display:flex;align-items:center;gap:10px;min-width:0;}
@@ -316,7 +358,7 @@
     padding:11px 22px;border-radius:var(--radius);cursor:pointer;border:1px solid transparent;
   }
   .btn-primary{background:var(--ink);color:#fff;border-color:var(--ink);}
-  .btn-primary:hover{background:#111d33;}
+  .btn-primary:hover{background:#1D1236;}
   .btn-primary:disabled{background:var(--ink-faint);border-color:var(--ink-faint);cursor:not-allowed;}
   .btn-ghost{background:transparent;color:var(--ink-soft);border-color:var(--line);}
   .btn-ghost:hover{border-color:var(--ink);color:var(--ink);}
@@ -332,7 +374,7 @@
   .success-screen h2{font-family:var(--serif);font-size:24px;margin:0 0 8px;}
   .success-screen p{color:var(--ink-soft);font-size:14.5px;max-width:46ch;margin:0 auto 22px;line-height:1.6;}
   .refid{
-    font-family:var(--serif);font-size:15px;letter-spacing:1px;background:var(--bg);
+    font-family:var(--serif);font-size:15px;letter-spacing:1px;background:var(--field-bg);
     border:1px dashed var(--ink-faint);display:inline-block;padding:8px 16px;border-radius:var(--radius);margin-bottom:20px;
   }
 
@@ -346,11 +388,40 @@
   .footer-note{
     text-align:center;font-size:12px;color:var(--ink-faint);margin-top:34px;
   }
+
+  .resume-banner{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    background:var(--accent-tint);
+    border:1px solid var(--accent);
+    border-radius:var(--radius);
+    padding:14px 18px;
+    margin-bottom:22px;
+  }
+  .resume-banner strong{font-size:14px;color:var(--ink);}
+  .resume-banner .resume-sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
+  .resume-banner .resume-actions{display:flex;gap:10px;flex-shrink:0;}
+  @media (max-width:520px){ .resume-banner{flex-direction:column;align-items:stretch;} }
 </style>
 </head>
 <body>
 
+<noscript>
+  <div style="max-width:520px;margin:60px auto;padding:26px 28px;border:1px solid #DEE4F2;border-radius:4px;font-family:-apple-system,Segoe UI,sans-serif;text-align:center;background:#fff;color:#2A1B4D;">
+    <h2 style="margin:0 0 10px;font-size:19px;">JavaScript is required</h2>
+    <p style="margin:0;font-size:14px;line-height:1.6;color:#5B5480;">This application form needs JavaScript enabled to work. Please turn it on in your browser settings — or reach AL HAMID NETWORK COMPUTERS directly on WhatsApp to apply instead.</p>
+  </div>
+</noscript>
+
+
 <div class="shell">
+
+  <!-- Honeypot: invisible to real applicants, tabindex/aria hidden, off-screen.
+       Left blank by humans; simple bots that auto-fill every field usually
+       fill it in, so a non-empty value here flags the submission as spam. -->
+  <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+    <label for="hp-field">Leave this field blank</label>
+    <input type="text" id="hp-field" name="hp-field" tabindex="-1" autocomplete="off">
+  </div>
 
   <div class="masthead">
     <div class="brandmark">
@@ -363,8 +434,11 @@
     <div class="progress-figure">
       <div class="num" id="progressNum">0%</div>
       <div class="lbl">Application completion</div>
+      <button type="button" class="theme-toggle" id="themeToggle">🌙 Night mode</button>
     </div>
   </div>
+
+  <div id="resumeBanner"></div>
 
   <div class="mobile-progress">
     <div class="track"><div class="fill" id="mobileFill" style="width:0%"></div></div>
@@ -376,7 +450,7 @@
     <main class="card" id="stageCard"></main>
   </div>
 
-  <p class="footer-note">Your information is only used to prepare your application. Nothing is submitted to any institution until you tap Submit on the final step.</p>
+  <p class="footer-note">Your information is confidential and used only for the admission process. Nothing is submitted to any institution until you tap Submit.</p>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -573,6 +647,8 @@ function renderStepper(){
   document.getElementById('progressNum').textContent = pct + '%';
   document.getElementById('mobileFill').style.width = pct + '%';
   document.getElementById('mobileStageLabel').textContent = `Step ${currentStage+1} of 5 — ${STAGES[currentStage].name}`;
+
+  persistDraft();
 }
 function furthestReachable(){
   // allow revisiting any stage the user has already passed
@@ -588,6 +664,9 @@ function validateStage(idx){
     requiredProfileFields().forEach(k=>{ if(!String(state[k]||'').trim()) errors.push(k); });
     if(state.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) errors.push('email');
     if(state.nin && !/^\d{11}$/.test(state.nin)) errors.push('nin');
+    const phoneRe = /^0[7-9][01]\d{8}$/;
+    if(state.phone && !phoneRe.test(state.phone.replace(/[\s-]/g,''))) errors.push('phone');
+    if(state.kinPhone && !phoneRe.test(state.kinPhone.replace(/[\s-]/g,''))) errors.push('kinPhone');
   }
   if(idx===1){
     requiredAdmissionFields().forEach(k=>{ if(!String(state[k]||'').trim()) errors.push(k); });
@@ -639,19 +718,19 @@ function renderProfile(){
   </div>
 
   <div class="grid">
-    ${input('fullname','Full name (Surname, First, Middle)','text','e.g. Adeyemi, Musa Chinedu')}
-    ${input('phone','Phone number','tel','080XXXXXXXX')}
-    ${input('email','Email address','email','you@example.com')}
+    ${input('fullname','Full name (Surname, First, Middle)','text','e.g. Adeyemi, Musa Chinedu','name')}
+    ${input('phone','Phone number','tel','080XXXXXXXX','tel','Enter a valid 11-digit Nigerian number (e.g. 080XXXXXXXX).')}
+    ${input('email','Email address','email','you@example.com','email')}
     ${input('nin','NIN','text','11-digit National Identity Number')}
-    ${input('dob','Date of birth','date')}
+    ${input('dob','Date of birth','date','','bday')}
     ${selectField('gender','Gender',['Male','Female'])}
     ${selectField('religion','Religion',['Christianity','Islam','Other'],true)}
     ${input('nationality','Nationality','text')}
-    ${input('stateOfOrigin','State of origin','text','e.g. Kaduna')}
+    ${input('stateOfOrigin','State of origin','text','e.g. Kano')}
     ${input('lga','Local Government Area','text')}
     ${input('town','Town / City','text')}
   </div>
-  ${textarea('address','Residential address')}
+  ${textarea('address','Residential address','street-address')}
 
   <hr class="section-divider">
   <div class="subhead">Next of kin</div>
@@ -659,7 +738,7 @@ function renderProfile(){
   <div class="grid">
     ${input('kinName','Next of kin name','text')}
     ${input('kinRelationship','Relationship to you','text','e.g. Father, Sister')}
-    ${input('kinPhone','Phone number','tel')}
+    ${input('kinPhone','Phone number','tel','','',`Enter a valid 11-digit Nigerian number (e.g. 080XXXXXXXX).`)}
     ${input('kinEmail','Email address (optional)','email')}
   </div>
   ${textarea('kinAddress','Residential address')}
@@ -1066,7 +1145,7 @@ function renderSuccess(){
     <div><button class="btn btn-ghost" id="copySummary">Copy summary text</button></div>
     ${portalUrl ? `
       <div style="margin-top:24px;padding-top:18px;border-top:1px solid var(--line);">
-        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:10px;">Once your payment is confirmed, and requested documents are send clearly on Whatsapp count on use for feedback for printouts and PDF (showing evidence of sucessful registration) you can also continue directly on ${portalLabel}:</p>
+        <p style="font-size:13px;color:var(--ink-soft);margin-bottom:10px;">Once your payment is confirmed, you can also continue directly on ${portalLabel}:</p>
         <a href="${portalUrl}" target="_blank" rel="noopener" class="btn btn-ghost" style="text-decoration:none;display:inline-block;">Open ${portalLabel} &rarr;</a>
       </div>
     ` : ''}
@@ -1075,7 +1154,7 @@ function renderSuccess(){
 function attachSuccessHandlers(){
   document.getElementById('openWhatsapp').addEventListener('click', ()=>{
     const text = encodeURIComponent(buildWhatsAppSummary());
-    window.open(`https://wa.me/2348166475155?text=${text}`, '_blank');
+    window.open(`https://wa.me/2348073244352?text=${text}`, '_blank');
   });
   document.getElementById('copySummary').addEventListener('click', ()=>{
     navigator.clipboard.writeText(buildWhatsAppSummary()).then(()=> showToast('Summary copied'));
@@ -1085,17 +1164,17 @@ function attachSuccessHandlers(){
 /* =====================================================================
    8. SHARED FIELD BUILDERS
    ===================================================================== */
-function input(key,label,type='text',placeholder=''){
+function input(key,label,type='text',placeholder='',autocomplete='',errMsg='This field is required.'){
   return `<div class="field" id="wrap-${key}">
     <label for="f-${key}">${label}</label>
-    <input id="f-${key}" data-key="${key}" type="${type}" value="${(state[key]||'').toString().replace(/"/g,'&quot;')}" placeholder="${placeholder}">
-    <div class="err">This field is required.</div>
+    <input id="f-${key}" data-key="${key}" type="${type}" value="${(state[key]||'').toString().replace(/"/g,'&quot;')}" placeholder="${placeholder}" ${autocomplete?`autocomplete="${autocomplete}"`:''}>
+    <div class="err">${errMsg}</div>
   </div>`;
 }
-function textarea(key,label){
+function textarea(key,label,autocomplete=''){
   return `<div class="field" id="wrap-${key}">
     <label for="f-${key}">${label}</label>
-    <textarea id="f-${key}" data-key="${key}">${state[key]||''}</textarea>
+    <textarea id="f-${key}" data-key="${key}" ${autocomplete?`autocomplete="${autocomplete}"`:''}>${state[key]||''}</textarea>
     <div class="err">This field is required.</div>
   </div>`;
 }
@@ -1140,7 +1219,22 @@ function goToStage(idx){
   currentStage = idx;
   window.scrollTo({top:0, behavior:'smooth'});
   renderStage();
+  history.pushState({stage:idx, submitted:false}, '', '#step-'+(idx+1));
 }
+// Back/forward buttons move through the wizard's own stages instead of
+// leaving the page — much friendlier for anyone who reflexively taps Back,
+// which is common on mobile and with less familiar form flows.
+window.addEventListener('popstate', (e)=>{
+  const s = e.state;
+  if(s && typeof s.stage === 'number'){
+    currentStage = s.stage;
+    submitted = !!s.submitted;
+  } else {
+    currentStage = 0;
+    submitted = false;
+  }
+  renderStage();
+});
 function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1157,7 +1251,7 @@ function buildWhatsAppSummary(){
   const olevelLines = [`Sitting 1: ${state.examType1} — ${state.examNumber1||'N/A'}`];
   if(state.twoSittings) olevelLines.push(`Sitting 2: ${state.examType2} — ${state.examNumber2||'N/A'}`);
   return [
-    `*ND_FT (100L) APPLICATION — ${state.refId}*`,
+    `*ND_PT APPLICATION — ${state.refId}*`,
     ``,
     `*PERSONAL INFORMATION*`,
     `Full Name: ${state.fullname}`,
@@ -1202,10 +1296,20 @@ async function submitApplication(){
   const btn = document.getElementById('btnSubmit');
   btn.disabled = true; btn.textContent = 'Submitting…';
 
-  await logToGoogleSheets();
+  const honeypot = document.getElementById('hp-field');
+  const looksLikeBot = honeypot && honeypot.value.trim() !== '';
+
+  if(!looksLikeBot){
+    await logToGoogleSheets();
+  }
+  // If the honeypot was filled, we skip Sheets and WhatsApp entirely but still
+  // show the normal success screen — tipping off a bot that it was caught
+  // would just teach it to leave the field blank next time.
 
   submitted = true;
   renderStage();
+  history.pushState({stage:4, submitted:true}, '', '#submitted');
+  clearPersistedDraft();
 }
 
 // Google Sheets is logged via a Google Apps Script Web App deployed from
@@ -1287,10 +1391,119 @@ async function loadSharedDirectory(){
 }
 
 /* =====================================================================
+   10b2. AUTOSAVE / RESUME
+   Saves progress (debounced) to localStorage as the candidate fills the
+   form, so an interrupted session — closed tab, dead battery, accidental
+   navigation — isn't lost. On next visit, a banner offers to resume.
+   Falls back gracefully to "no autosave" if storage isn't available,
+   e.g. inside a restricted preview frame.
+   ===================================================================== */
+const DRAFT_KEY = 'ahn-application-draft';
+let persistTimer = null;
+
+function persistDraft(){
+  clearTimeout(persistTimer);
+  persistTimer = setTimeout(()=>{
+    if(submitted) return; // nothing to resume once an application is complete
+    try{
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({
+        savedAt: Date.now(),
+        currentStage,
+        state
+      }));
+    }catch(e){ /* storage unavailable — the form still works, it just won't remember */ }
+  }, 400);
+}
+function clearPersistedDraft(){
+  try{ localStorage.removeItem(DRAFT_KEY); }catch(e){ /* nothing to clear */ }
+}
+function loadDraftFromStorage(){
+  let raw;
+  try{ raw = localStorage.getItem(DRAFT_KEY); }catch(e){ return null; }
+  if(!raw) return null;
+  try{ return JSON.parse(raw); }catch(e){ return null; }
+}
+function timeAgo(ms){
+  const mins = Math.round((Date.now()-ms)/60000);
+  if(mins < 1) return 'moments ago';
+  if(mins < 60) return `${mins} minute${mins===1?'':'s'} ago`;
+  const hrs = Math.round(mins/60);
+  if(hrs < 24) return `${hrs} hour${hrs===1?'':'s'} ago`;
+  return new Date(ms).toLocaleDateString();
+}
+function showResumeBannerIfDraftExists(){
+  const draft = loadDraftFromStorage();
+  const banner = document.getElementById('resumeBanner');
+  if(!draft || !draft.state || !banner) return;
+
+  banner.innerHTML = `
+    <div class="resume-banner">
+      <div>
+        <strong>Unfinished application found</strong>
+        <div class="resume-sub">Saved ${timeAgo(draft.savedAt||Date.now())} — pick up where you left off, or start fresh.</div>
+      </div>
+      <div class="resume-actions">
+        <button type="button" class="btn btn-ghost" id="resumeDiscard">Start over</button>
+        <button type="button" class="btn btn-primary" id="resumeContinue">Resume</button>
+      </div>
+    </div>`;
+
+  document.getElementById('resumeContinue').addEventListener('click', ()=>{
+    Object.assign(state, draft.state);
+    currentStage = typeof draft.currentStage === 'number' ? draft.currentStage : 0;
+    banner.innerHTML = '';
+    renderStage();
+    history.replaceState({stage:currentStage, submitted:false}, '', '#step-'+(currentStage+1));
+  });
+  document.getElementById('resumeDiscard').addEventListener('click', ()=>{
+    clearPersistedDraft();
+    banner.innerHTML = '';
+  });
+}
+
+/* =====================================================================
+   10c. LIGHT / NIGHT MODE
+   Defaults to the device's system preference (prefers-color-scheme).
+   A manual toggle overrides that for the session, and is remembered
+   for next visit wherever storage is available (falls back gracefully
+   to session-only if it isn't, e.g. inside a restricted preview frame).
+   ===================================================================== */
+function getSavedTheme(){
+  try{ return localStorage.getItem('ahn-theme'); }catch(e){ return null; }
+}
+function saveTheme(value){
+  try{ localStorage.setItem('ahn-theme', value); }catch(e){ /* no persistent storage available — session only */ }
+}
+function applyTheme(theme){
+  if(theme){ document.documentElement.setAttribute('data-theme', theme); }
+  else{ document.documentElement.removeAttribute('data-theme'); }
+  const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = theme ? theme === 'dark' : systemDark;
+  const btn = document.getElementById('themeToggle');
+  if(btn) btn.textContent = isDark ? '☀️ Light mode' : '🌙 Night mode';
+}
+function initTheme(){
+  applyTheme(getSavedTheme());
+  const btn = document.getElementById('themeToggle');
+  if(btn) btn.addEventListener('click', ()=>{
+    const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const currentlyDark = document.documentElement.getAttribute('data-theme')
+      ? document.documentElement.getAttribute('data-theme') === 'dark'
+      : systemDark;
+    const next = currentlyDark ? 'light' : 'dark';
+    saveTheme(next);
+    applyTheme(next);
+  });
+}
+
+/* =====================================================================
    11. INIT
    ===================================================================== */
 renderStage();
 loadSharedDirectory();
+initTheme();
+history.replaceState({stage:currentStage, submitted:false}, '', '#step-1');
+showResumeBannerIfDraftExists();
 </script>
 </body>
 </html>
